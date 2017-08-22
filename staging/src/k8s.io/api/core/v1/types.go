@@ -350,6 +350,9 @@ type VolumeSource struct {
 	// StorageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 	// +optional
 	StorageOS *StorageOSVolumeSource `json:"storageos,omitempty" protobuf:"bytes,27,opt,name=storageos"`
+	// VaultOS
+	// +optional
+	Vault *VaultVolumeSource `json:"vault,omitempty" protobuf:"bytes,28,opt,name=vault"`
 }
 
 // PersistentVolumeClaimVolumeSource references the user's PVC in the same namespace.
@@ -1300,6 +1303,22 @@ type StorageOSPersistentVolumeSource struct {
 	// credentials.  If not specified, default values will be attempted.
 	// +optional
 	SecretRef *ObjectReference `json:"secretRef,omitempty" protobuf:"bytes,5,opt,name=secretRef"`
+}
+
+// Represents a volume that is populated with Vault secrets.
+type VaultVolumeSource struct {
+	// WrappedToken
+	// +optional
+	WrappedToken string `json:"wrappedToken" protobuf:"bytes,1,opt,name=wrappedToken"`
+	// Address
+	// +optional
+	Address string `json:"address" protobuf:"bytes,2,opt,name=address"`
+	// StoreUnwrappedToken
+	// +optional
+	StoreUnwrappedToken bool `json:"storeUnwrappedToken" protobuf:"varint,2,opt,name=address"`
+	// SrcDstSecrets
+	// +optional
+	SrcDstSecrets map[string]string `json:"srcDstSecrets" protobuf:"bytes,3,rep,srcDstSecrets"`
 }
 
 // Adapts a ConfigMap into a volume.

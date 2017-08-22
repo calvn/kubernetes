@@ -318,7 +318,7 @@ type VolumeSource struct {
 	StorageOS *StorageOSVolumeSource
 	// Vault represents a Vault volume attached and mounted on Kubernetes nodes.
 	// +optional
-	Vault *VaultVolumeSource `json:"vault,omitempty" protobuf:"bytes,28,opt,name=vault"`
+	Vault *VaultVolumeSource
 }
 
 // Similar to VolumeSource but meant for the administrator who creates PVs.
@@ -810,17 +810,6 @@ type GitRepoVolumeSource struct {
 	// TODO: Consider credentials here.
 }
 
-type VaultVolumeSource struct {
-	// WrappedToken
-	WrappedToken string `json:"wrappedToken" protobuf:"bytes,1,opt,name=wrappedToken"`
-	// Address
-	Address string `json:"address" protobuf:"bytes,2,opt,name=address"`
-	// StoreUnwrappedToken
-	StoreUnwrappedToken bool `json:"storeUnwrappedToken" protobuf:"varint,2,opt,name=address"`
-	// SrcDstSecrets
-	SrcDstSecrets map[string]string `json:"srcDstSecrets" protobuf:"bytes,3,rep,srcDstSecrets"`
-}
-
 // Adapts a Secret into a volume.
 //
 // The contents of the target Secret's Data field will be presented in a volume
@@ -1236,6 +1225,22 @@ type StorageOSPersistentVolumeSource struct {
 	// credentials.  If not specified, default values will be attempted.
 	// +optional
 	SecretRef *ObjectReference
+}
+
+// Represents a volume that is populated with Vault secrets.
+type VaultVolumeSource struct {
+	// WrappedToken
+	// +optional
+	WrappedToken string
+	// Address
+	// +optional
+	Address string
+	// StoreUnwrappedToken
+	// +optional
+	StoreUnwrappedToken bool
+	// SrcDstSecrets
+	// +optional
+	SrcDstSecrets map[string]string
 }
 
 // Adapts a ConfigMap into a volume.
