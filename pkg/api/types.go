@@ -316,6 +316,9 @@ type VolumeSource struct {
 	// StorageOS represents a StorageOS volume that is attached to the kubelet's host machine and mounted into the pod
 	// +optional
 	StorageOS *StorageOSVolumeSource
+	// Vault represents a Vault volume attached and mounted on Kubernetes nodes.
+	// +optional
+	Vault *VaultVolumeSource `json:"vault,omitempty" protobuf:"bytes,28,opt,name=vault"`
 }
 
 // Similar to VolumeSource but meant for the administrator who creates PVs.
@@ -805,6 +808,17 @@ type GitRepoVolumeSource struct {
 	// +optional
 	Directory string
 	// TODO: Consider credentials here.
+}
+
+type VaultVolumeSource struct {
+	// WrappedToken
+	WrappedToken string `json:"wrappedToken" protobuf:"bytes,1,opt,name=wrappedToken"`
+	// Address
+	Address string `json:"address" protobuf:"bytes,2,opt,name=address"`
+	// StoreUnwrappedToken
+	StoreUnwrappedToken bool `json:"storeUnwrappedToken" protobuf:"varint,2,opt,name=address"`
+	// SrcDstSecrets
+	SrcDstSecrets map[string]string `json:"srcDstSecrets" protobuf:"bytes,3,rep,srcDstSecrets"`
 }
 
 // Adapts a Secret into a volume.
