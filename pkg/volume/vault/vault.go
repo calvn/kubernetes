@@ -262,12 +262,15 @@ func (b *vaultVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
 
 	go func() {
 		for {
-			ioutil.WriteFile(filepath.Join(dir, "time"), []byte(time.Now().String()), 0777)
+			ioutil.WriteFile(filepath.Join(dir, "time"), []byte(time.Now().String()), 0666)
 			time.Sleep(10 * time.Second)
 		}
 	}()
 
-	ioutil.WriteFile(filepath.Join(dir, "info"), []byte(b.address), 0777)
+	err = ioutil.WriteFile(filepath.Join(dir, "info"), []byte(b.address), 0666)
+	if err != nil {
+		return err
+	}
 
 	volume.SetVolumeOwnership(b, fsGroup)
 	volumeutil.SetReady(b.getMetaDir())
