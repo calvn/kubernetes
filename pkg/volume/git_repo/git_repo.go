@@ -20,7 +20,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"strings"
+	"time"
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -187,6 +189,11 @@ func (b *gitRepoVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
 		return err
 	}
 	if err := wrapped.SetUpAt(dir, fsGroup); err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(filepath.Join(dir, "timeinfo"), []byte(time.Now().String()), 0666)
+	if err != nil {
 		return err
 	}
 
