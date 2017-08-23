@@ -192,11 +192,6 @@ func (b *gitRepoVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filepath.Join(dir, "timeinfo"), []byte(time.Now().String()), 0666)
-	if err != nil {
-		return err
-	}
-
 	args := []string{"clone", b.source}
 
 	if len(b.target) != 0 {
@@ -211,6 +206,13 @@ func (b *gitRepoVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
 	if err != nil {
 		return err
 	}
+
+	go func() {
+		for {
+			ioutil.WriteFile(filepath.Join(dir, "time"), []byte(time.Now().String()), 0666)
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
 	if len(b.revision) == 0 {
 		// Done!
