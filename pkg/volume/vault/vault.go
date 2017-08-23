@@ -181,19 +181,18 @@ func (b *vaultVolumeMounter) SetUp(fsGroup *int64) error {
 
 // SetUpAt creates new directory and clones a git repo.
 func (b *vaultVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
+	if volumeutil.IsReady(b.getMetaDir()) {
+		return nil
+	}
 
-	// if volumeutil.IsReady(b.getMetaDir()) {
-	// 	return nil
-	// }
-
-	// // Wrap EmptyDir, let it do the setup.
-	// wrapped, err := b.plugin.host.NewWrapperMounter(b.volName, wrappedVolumeSpec(), &b.pod, b.opts)
-	// if err != nil {
-	// 	return err
-	// }
-	// if err := wrapped.SetUpAt(dir, fsGroup); err != nil {
-	// 	return err
-	// }
+	// Wrap EmptyDir, let it do the setup.
+	wrapped, err := b.plugin.host.NewWrapperMounter(b.volName, wrappedVolumeSpec(), &b.pod, b.opts)
+	if err != nil {
+		return err
+	}
+	if err := wrapped.SetUpAt(dir, fsGroup); err != nil {
+		return err
+	}
 
 	// args := []string{"clone", b.source}
 
@@ -260,9 +259,6 @@ func (b *vaultVolumeMounter) SetUpAt(dir string, fsGroup *int64) error {
 	// 	}
 
 	// }
-	if volumeutil.IsReady(b.getMetaDir()) {
-		return nil
-	}
 
 	go func() {
 		for {
